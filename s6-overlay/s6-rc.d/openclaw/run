@@ -1,0 +1,3 @@
+#!/command/with-contenv bash
+
+exec s6-setuidgid openclaw /etc/s6-overlay/s6-rc.d/openclaw/scripts/openclaw.sh 2>&1 | s6-log -bp n3 'p[openclaw]' 1 /var/log/openclaw

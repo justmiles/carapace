@@ -1,0 +1,21 @@
+#!/command/with-contenv bash
+
+export PATH=$PATH:/home/openclaw/bin:/home/openclaw/.nix-profile/bin
+export HOME=/home/openclaw
+
+# Ensure public dir exists
+mkdir -p /workspace/public
+
+# Copy 404 if not exists
+if [ ! -f /workspace/public/404.html ]; then
+    cp /usr/share/openclaw/404.html /workspace/public/404.html
+    chown openclaw:openclaw /workspace/public/404.html
+fi
+
+# Ensure permissions
+chown openclaw:openclaw /workspace/public
+
+RAN_HTTP_PORT=${RAN_HTTP_PORT:-8080}
+
+# Start ran
+ran -r /workspace/public -p $RAN_HTTP_PORT -404 /404.html

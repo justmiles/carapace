@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+export PATH=$PATH:/home/openclaw/.nix-profile/bin
+
+node /home/openclaw/app/dist/index.js $@

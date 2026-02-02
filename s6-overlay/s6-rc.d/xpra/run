@@ -1,0 +1,17 @@
+#!/command/with-contenv bash
+
+# Create /tmp/.X11-unix if it does not exist
+if [ ! -d /tmp/.X11-unix ]; then
+  mkdir -p /tmp/.X11-unix
+  chmod 1777 /tmp/.X11-unix
+fi
+
+# Create /run/xpra if it does not exist and give ownership to openclaw
+if [ ! -d /run/xpra ]; then
+  mkdir -p /run/xpra
+  chown openclaw:openclaw /run/xpra
+  chmod 775 /run/xpra
+fi
+
+# don't use s6-log because these logs are too annoying
+exec s6-setuidgid openclaw /etc/s6-overlay/s6-rc.d/xpra/scripts/xpra.sh 2>&1 >> /var/log/xpra

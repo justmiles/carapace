@@ -1,0 +1,49 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2026-01-26T13:12:53Z",
+      "resolved": "github:NixOS/nixpkgs/13b0f9e6ac78abbbb736c635d87845c4f4bee51b?lastModified=1769433173&narHash=sha256-Gf1dFYgD344WZ3q0LPlRoWaNdNQq8kSBDLEWulRQSEs%3D"
+    },
+    "jq@latest": {
+      "last_modified": "2026-01-24T23:43:55Z",
+      "resolved": "github:NixOS/nixpkgs/26b0093bc977081dc7653175a3fadab11e07bed7#jq",
+      "source": "devbox-search",
+      "version": "1.8.1",
+      "systems": {
+        "aarch64-darwin": {
+          "store_path": "/nix/store/qjs0qndyz1g97rsc1zp4cd692y5iph64-jq-1.8.1-bin"
+        },
+        "aarch64-linux": {
+          "store_path": "/nix/store/c1qm5fsn6qbl09xdjx649vifabypyywd-jq-1.8.1-bin"
+        },
+        "x86_64-darwin": {
+          "store_path": "/nix/store/51343hgchh7by4l8r1g244ma05ny3x0b-jq-1.8.1-bin"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/qnaw7i777j52fpgbl5pgmzkq85znp083-jq-1.8.1-bin"
+        }
+      }
+    },
+    "podman@latest": {
+      "last_modified": "2026-01-27T15:18:14Z",
+      "resolved": "github:NixOS/nixpkgs/afce96367b2e37fc29afb5543573cd49db3357b7#podman",
+      "source": "devbox-search",
+      "version": "5.7.0",
+      "systems": {
+        "aarch64-darwin": {
+          "store_path": "/nix/store/m7f0hla059jskqrc0isfhkssw2sa22ax-podman-5.7.0"
+        },
+        "aarch64-linux": {
+          "store_path": "/nix/store/rh6x50ylxh69jv9qk4yhfvvgzia0r3zq-podman-5.7.0"
+        },
+        "x86_64-darwin": {
+          "store_path": "/nix/store/kzqgd1nmxgy7ab7a86j49abrgdgqj0s3-podman-5.7.0"
+        },
+        "x86_64-linux": {
+          "store_path": "/nix/store/pxpyszxikjazm02a4sn174clb7jl21vp-podman-5.7.0"
+        }
+      }
+    }
+  }
+}

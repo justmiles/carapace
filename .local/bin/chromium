@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Chromium wrapper
+
+export DISPLAY="${DISPLAY:-:99}"
+export XAUTHORITY="${XAUTHORITY:-/home/openclaw/.runtime/xpra/Xauthority-99}"
+export FONTCONFIG_FILE="${FONTCONFIG_FILE:-/home/openclaw/.config/fontconfig/fonts.conf}"
+
+exec /home/openclaw/.nix-profile/bin/chromium \
+  --no-sandbox \
+  --disable-gpu \
+  --disable-software-rasterizer \
+  --disable-crash-reporter \
+  --disable-breakpad \
+  --no-default-browser-check \
+  "$@"
