@@ -29,7 +29,7 @@ Carapace is a robust container environment designed for **OpenClaw**, providing 
 ### Building the Image
 
 ```bash
-docker build -t justmiles/carapace:v0.0.1 .
+docker build -t justmiles/carapace:{{TAG}} .
 ```
 
 ### Running the Container
@@ -40,7 +40,7 @@ docker run -d \
   -p 8080:8080 \
   -p 18789:18789 \
   --name carapace-instance \
-  justmiles/carapace:v0.0.1
+  justmiles/carapace:{{TAG}}
 ```
 
 ## Environment Details
