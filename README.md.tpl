@@ -43,6 +43,35 @@ docker run -d \
   justmiles/carapace:{{TAG}}
 ```
 
+### Recommended Run Configuration
+
+To run Carapace with full capabilities, including Tailscale integration and persistent storage, use the following configuration:
+
+1.  **Generate an OpenClaw Gateway Token:**
+    ```bash
+    openssl rand -hex 32
+    ```
+2.  **Obtain a Tailscale Auth Key:**
+    Generate a new auth key from your [Tailscale Admin Console](https://login.tailscale.com/admin/settings/keys).
+
+3.  **Run the Container:**
+    Replace `<YOUR_TAILSCALE_AUTH_KEY>` and `<YOUR_GENERATED_TOKEN>` with your values.
+
+    ```bash
+    docker run -it --rm --name carapace \
+      -e TS_AUTH_KEY="<YOUR_TAILSCALE_AUTH_KEY>" \
+      -e TS_HOSTNAME="openclaw-dev" \
+      -e TS_STATE_DIR="/workspace/.tailscale" \
+      -e TS_ACCEPT_ROUTES="true" \
+      -e TS_USERSPACE="true" \
+      -e TS_ACCEPT_DNS="true" \
+      -e TS_EXTRA_ARGS="--ssh" \
+      -e OPENCLAW_GATEWAY_TOKEN="<YOUR_GENERATED_TOKEN>" \
+      -v $PWD/.data/workspace:/workspace \
+      -v $PWD/.data/openclaw:/home/openclaw/.openclaw \
+      justmiles/carapace:{{TAG}}
+    ```
+
 ## Environment Details
 
 ### Nix Package Manager
