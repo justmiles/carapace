@@ -20,6 +20,9 @@ RUN git clone https://github.com/openclaw/openclaw.git -b v2026.1.30 .
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
+# Install openclaw deps
+RUN cd extensions/diagnostics-otel && pnpm install
+
 # Build
 RUN OPENCLAW_A2UI_SKIP_MISSING=1 pnpm build
 ENV OPENCLAW_PREFER_PNPM=1
@@ -30,7 +33,7 @@ RUN CI=true pnpm prune --prod
 
 FROM ubuntu:noble
 
-RUN userdel -r ubuntu && useradd --create-home openclaw
+RUN userdel -r ubuntu && useradd --create-home --shell /bin/bash openclaw
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -82,6 +85,7 @@ RUN sh /tmp/nix-install --no-daemon
 
 WORKDIR /home/openclaw
 
+# Install packages needed for Carapace
 RUN export PATH=$HOME/.nix-profile/bin:$PATH \
   && NIXPKGS_ALLOW_UNFREE=1 nix-env -iA \
   nixpkgs.adwaita-icon-theme \
@@ -112,6 +116,33 @@ RUN export PATH=$HOME/.nix-profile/bin:$PATH \
   nixpkgs.xhost \
   nixpkgs.xpra \
   nixpkgs.yq \
+ && nix-env --delete-generations old \
+ && nix-store --gc
+
+# Install packages my OpenClaw instance constantly asks for
+RUN export PATH=$HOME/.nix-profile/bin:$PATH \
+  && NIXPKGS_ALLOW_UNFREE=1 nix-env -iA \
+  nixpkgs.git \
+  nixpkgs.curl \
+  nixpkgs.wget \
+  nixpkgs.jq \
+  nixpkgs.htop \
+  nixpkgs.tree \
+  nixpkgs.tmux \
+  nixpkgs.nano \
+  nixpkgs.imagemagick \
+  nixpkgs.ffmpeg \
+  nixpkgs.nmap \
+  nixpkgs.zip \
+  nixpkgs.unzip \
+  nixpkgs.p7zip \
+  nixpkgs.ripgrep \
+  nixpkgs.fd \
+  nixpkgs.tea \
+  nixpkgs.nomad \
+  nixpkgs.scrot \
+  nixpkgs.poppler-utils \
+  nixpkgs.chezmoi \
  && nix-env --delete-generations old \
  && nix-store --gc
 
