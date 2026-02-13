@@ -11,3 +11,4 @@ if ! grep -q "/home/openclaw/bin:/home/openclaw/.nix-profile/bin" "/home/opencla
 fi
 
 chown -R openclaw:openclaw /workspace
+chown openclaw:openclaw /home/openclaw/.openclaw
