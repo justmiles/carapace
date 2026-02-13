@@ -3,15 +3,22 @@ name: default
 
 steps:
 - name: prepare-tags
-  image: alpine
+  image: alpine/git
   commands:
-  - export OPENCLAW_VER=$(grep "ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=" Dockerfile | cut -d= -f2)
-  - |
-    if [ -n "$DRONE_TAG" ]; then
-      echo -n "latest,${DRONE_TAG},${DRONE_TAG}-openclaw-${OPENCLAW_VER}" > .tags
-    else
-      echo -n "latest" > .tags
-    fi
+  - git fetch --tags
+  - echo "Debug: List all files"
+  - ls -la
+  - echo "Debug: First 5 lines of Dockerfile"
+  - head -n 5 Dockerfile
+  - echo "Debug: Grep result"
+  - grep "ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=" Dockerfile
+  - echo "Debug: Git tags"
+  - git tag --sort=-v:refname
+  - export OPENCLAW_VER=$(grep "ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=" Dockerfile | cut -d= -f2 | awk '{print $1}')
+  - export LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
+  - echo "Debug: Variables: VER=$OPENCLAW_VER TAG=$LATEST_TAG"
+  - echo -n "latest,${LATEST_TAG},${LATEST_TAG}-openclaw-${OPENCLAW_VER},${DRONE_VERSION}" > .tags
+  - cat .tags
 
 - name: docker
   image: plugins/docker
@@ -20,6 +27,12 @@ steps:
     password: 
       from_secret: docker_password
     repo: justmiles/carapace
-    squash: true
+    squash: false
     cache_from:
       - "justmiles/carapace:latest"
+
+trigger:
+  branch:
+  - main
+  event:
+  - push
