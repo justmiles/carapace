@@ -1,16 +1,17 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "config:base"
+        "config:recommended"
     ],
     "automerge": true,
     "enabledManagers": [
-        "regex"
+        "custom.regex"
     ],
-    "regexManagers": [
+    "customManagers": [
         {
-            "fileMatch": [
-                "^Dockerfile$"
+            "customType": "regex",
+            "managerFilePatterns": [
+                "/^Dockerfile$/"
             ],
             "matchStrings": [
                 "ENV GITHUB_RELEASE_(?<depName>[A-Z0-9_]+)=(?<currentValue>.*?)\\s"
