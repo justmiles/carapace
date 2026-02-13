@@ -83,9 +83,9 @@ xpra start :99 \
     --opengl=no \
     --lock=no \
     --sharing=yes \
-    --readonly=yes \
-    --clipboard=no \
-    --file-transfer=no \
-    --resize-display=no \
+    --readonly=no \
+    --clipboard=yes \
+    --file-transfer=yes \
+    --resize-display=yes \
     --forward-xdg-open=no \
     --start "xhost +"
