@@ -1,6 +1,6 @@
 {
   "packages": [
-    "jq@latest",
+    "jq@1.8.1",
     "podman@latest"
   ],
   "shell": {
