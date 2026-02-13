@@ -39,7 +39,10 @@ RUN userdel -r ubuntu && useradd --create-home --shell /bin/bash openclaw
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install basic Apt Packages
-RUN apt-get update \
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  apt-get update \
   && apt-get install -y --no-install-recommends \
     curl \
     wget \
@@ -54,7 +57,7 @@ RUN apt-get update \
     lib32gcc-s1 lib32stdc++6 lib32z1 \
   && apt-get clean autoclean \
   && apt-get autoremove --yes \
-  && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
+  && rm -rf /var/lib/{dpkg,cache,log}/ \
   && mkdir -p /var/lib/dbus \
   && dbus-uuidgen > /var/lib/dbus/machine-id \
   && ln -sf /var/lib/dbus/machine-id /etc/machine-id
@@ -71,11 +74,11 @@ RUN curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/noble.gpg | apt-key add 
      && apt-get install -y tailscale
 
 # Install Nix
-ADD https://nixos.org/nix/install /tmp/nix-install
-RUN chmod 666 /tmp/nix-install
-RUN groupadd nixbld
-RUN usermod -a -G nixbld openclaw
-RUN mkdir -m 0755 /nix && chown -R openclaw /nix
+RUN curl -fsSL https://nixos.org/nix/install -o /tmp/nix-install \
+    && chmod 666 /tmp/nix-install \
+    && groupadd nixbld \
+    && usermod -a -G nixbld openclaw \
+    && mkdir -m 0755 /nix && chown -R openclaw /nix
 
 # Cleanup
 RUN find /var/log -type f | xargs -I % truncate -s0 %

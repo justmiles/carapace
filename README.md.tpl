@@ -2,6 +2,8 @@
 
 Carapace is a robust container environment designed for **OpenClaw**, providing an isolated workspace with GUI capabilities, persistent services, and on-demand package management. It enables AI agents to perform tasks requiring a desktop interface (like web browsing) securely within a container.
 
+[![Build Status](https://drone.justmiles.io/api/badges/justmiles/carapace/status.svg)](https://drone.justmiles.io/justmiles/carapace)
+
 ## Features
 
 - **Isolated Workspace**: Runs in a Docker container, keeping agent actions sandboxed from the host system.
