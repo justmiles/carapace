@@ -15,7 +15,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Clone the repository at ref
-RUN git clone https://github.com/openclaw/openclaw.git -b v2026.1.30 .
+ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=v2026.1.30
+RUN git clone https://github.com/openclaw/openclaw.git -b ${GITHUB_RELEASE_OPENCLAW__OPENCLAW} .
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
