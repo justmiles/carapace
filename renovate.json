@@ -3,6 +3,9 @@
     "extends": [
         "config:base"
     ],
+    "enabledManagers": [
+        "regex"
+    ],
     "regexManagers": [
         {
             "fileMatch": [
