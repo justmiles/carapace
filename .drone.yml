@@ -5,20 +5,14 @@ steps:
 - name: prepare-tags
   image: alpine/git
   commands:
-  - git fetch --tags
-  - echo "Debug: List all files"
-  - ls -la
-  - echo "Debug: First 5 lines of Dockerfile"
-  - head -n 5 Dockerfile
-  - echo "Debug: Grep result"
-  - grep "ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=" Dockerfile
-  - echo "Debug: Git tags"
-  - git tag --sort=-v:refname
-  - export OPENCLAW_VER=$(grep "ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=" Dockerfile | cut -d= -f2 | awk '{print $1}')
-  - export LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
-  - echo "Debug: Variables: VER=$OPENCLAW_VER TAG=$LATEST_TAG"
-  - echo -n "latest,${LATEST_TAG},${LATEST_TAG}-openclaw-${OPENCLAW_VER},${DRONE_VERSION}" > .tags
-  - cat .tags
+  - |
+    git fetch --tags
+    git tag --sort=-v:refname
+    export OPENCLAW_VER=$(grep "ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=" Dockerfile | cut -d= -f2 | awk '{print $1}')
+    export LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
+    echo -n "latest,$LATEST_TAG,$LATEST_TAG-openclaw-$OPENCLAW_VER" > .tags
+    if [ -n "$DRONE_VERSION" ]; then echo -n ",$DRONE_VERSION" >> .tags; fi
+    cat .tags
 
 - name: docker
   image: plugins/docker
