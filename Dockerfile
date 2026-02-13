@@ -14,23 +14,16 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Clone the repository at ref
-ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=v2026.1.30
-RUN git clone https://github.com/openclaw/openclaw.git -b ${GITHUB_RELEASE_OPENCLAW__OPENCLAW} .
+ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=v2026.1.30 \
+    OPENCLAW_PREFER_PNPM=1
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
-
-# Install openclaw deps
-RUN cd extensions/diagnostics-otel && pnpm install
-
-# Build
-RUN OPENCLAW_A2UI_SKIP_MISSING=1 pnpm build
-ENV OPENCLAW_PREFER_PNPM=1
-RUN pnpm ui:build
-
-# Prune dev dependencies to save space
-RUN CI=true pnpm prune --prod
+# Install OpenClaw
+RUN git clone https://github.com/openclaw/openclaw.git -b ${GITHUB_RELEASE_OPENCLAW__OPENCLAW} . \
+    && pnpm install --frozen-lockfile \
+    && (cd extensions/diagnostics-otel && pnpm install) \
+    && OPENCLAW_A2UI_SKIP_MISSING=1 pnpm build \
+    && pnpm ui:build \
+    && CI=true pnpm prune --prod
 
 FROM ubuntu:noble
 
