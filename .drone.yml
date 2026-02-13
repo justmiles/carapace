@@ -12,7 +12,5 @@ steps:
     tags: latest
     squash: true
     auto_tag: true
-    environment:
-      DOCKER_BUILDKIT: "1"
     cache_from:
       - "justmiles/carapace:latest"

@@ -39,10 +39,7 @@ RUN userdel -r ubuntu && useradd --create-home --shell /bin/bash openclaw
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install basic Apt Packages
-RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,target=/var/lib/apt,sharing=locked \
-  apt-get update \
+RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     curl \
     wget \
@@ -57,7 +54,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     lib32gcc-s1 lib32stdc++6 lib32z1 \
   && apt-get clean autoclean \
   && apt-get autoremove --yes \
-  && rm -rf /var/lib/{dpkg,cache,log}/ \
+  && rm -rf /var/lib/{apt,dpkg,cache,log}/ \
   && mkdir -p /var/lib/dbus \
   && dbus-uuidgen > /var/lib/dbus/machine-id \
   && ln -sf /var/lib/dbus/machine-id /etc/machine-id
