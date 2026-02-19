@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=2026.2.17 \
+ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=2026.2.19 \
     OPENCLAW_PREFER_PNPM=1
 
 # Install OpenClaw
