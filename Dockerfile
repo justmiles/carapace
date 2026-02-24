@@ -18,7 +18,7 @@ ENV GITHUB_RELEASE_OPENCLAW__OPENCLAW=2026.2.22 \
     OPENCLAW_PREFER_PNPM=1
 
 # Install OpenClaw
-RUN git clone https://github.com/openclaw/openclaw.git -b ${GITHUB_RELEASE_OPENCLAW__OPENCLAW} . \
+RUN git clone https://github.com/openclaw/openclaw.git -b v${GITHUB_RELEASE_OPENCLAW__OPENCLAW} . \
     && pnpm install --frozen-lockfile \
     && (cd extensions/diagnostics-otel && pnpm install) \
     && OPENCLAW_A2UI_SKIP_MISSING=1 pnpm build \
