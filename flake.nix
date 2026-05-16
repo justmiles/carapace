@@ -1,0 +1,112 @@
+{
+  description = "Carapace — package environment for the OpenClaw container";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  };
+
+  outputs = { self, nixpkgs }:
+    let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    in {
+      packages.${system} = rec {
+
+        # Core packages required by Carapace itself (GUI, runtime, dev tools)
+        carapace-core = pkgs.buildEnv {
+          name = "carapace-core";
+          paths = [
+            # --- Display & fonts ---
+            pkgs.adwaita-icon-theme
+            pkgs.dejavu_fonts
+            pkgs.fontconfig
+            pkgs.liberation_ttf
+            pkgs.noto-fonts
+            pkgs.xdg-utils
+            pkgs.xhost
+            pkgs.xpra
+
+            # --- Browser ---
+            pkgs.chromium
+
+            # --- IDE / code-server ---
+            pkgs.code-server
+
+            # --- Package management ---
+            pkgs.devbox
+            pkgs.pipx
+
+            # --- Python (for pygobject / xpra integration) ---
+            pkgs.python3
+            pkgs.python3Packages.pip
+            pkgs.python3Packages.pygobject3
+            pkgs.python3Packages.pyxdg
+            pkgs.python3Packages.gst-python
+
+            # --- GObject / GTK support ---
+            pkgs.gobject-introspection
+            pkgs.menu-cache
+            pkgs.shared-mime-info
+
+            # --- Node.js runtime ---
+            pkgs.nodejs_22
+
+            # --- Basic CLI utilities ---
+            pkgs.curl
+            pkgs.jq
+            pkgs.pwgen
+            pkgs.rsync
+            pkgs.unzip
+            pkgs.yq
+          ];
+        };
+
+        # Packages the OpenClaw agent commonly reaches for (nice-to-have, not required by Carapace itself)
+        carapace-agent = pkgs.buildEnv {
+          name = "carapace-agent";
+          paths = [
+            # --- Version control & networking ---
+            pkgs.git
+            pkgs.wget
+            pkgs.nmap
+
+            # --- Data & text processing ---
+            pkgs.ripgrep
+            pkgs.fd
+            pkgs.poppler-utils   # PDF tools
+
+            # --- Archive tools ---
+            pkgs.zip
+            pkgs.p7zip
+
+            # --- Media processing ---
+            pkgs.imagemagick
+            pkgs.ffmpeg
+            pkgs.scrot           # Screenshots
+
+            # --- Shell & system utilities ---
+            pkgs.htop
+            pkgs.tree
+            pkgs.tmux
+            pkgs.nano
+
+            # --- Infrastructure & deployment ---
+            pkgs.nomad
+            pkgs.tea             # Gitea CLI
+            pkgs.chezmoi         # Dotfiles management
+          ];
+        };
+
+        # Combined environment — what gets installed in the container
+        default = pkgs.buildEnv {
+          name = "carapace";
+          paths = [ carapace-core carapace-agent ];
+          ignoreCollisions = true;
+        };
+
+      };
+    };
+}

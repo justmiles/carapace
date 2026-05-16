@@ -16,7 +16,6 @@ push: ## Push the container image to the registry
 run: ## Run the container locally
 	$(CONTAINER_ENGINE) run -d \
 		-p 7756:7756 \
-		-p 8080:8080 \
 		-p 18789:18789 \
 		--name carapace-instance \
 		$(IMAGE_NAME):$(TAG)

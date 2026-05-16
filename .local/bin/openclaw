@@ -2,4 +2,4 @@
 
 export PATH=$PATH:/home/openclaw/.nix-profile/bin
 
-node /home/openclaw/app/dist/index.js $@
+node /home/openclaw/app/node_modules/openclaw/dist/index.js "$@"

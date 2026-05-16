@@ -6,7 +6,6 @@ You're running in **Carapace**, an isolated container with GUI capabilities.
 - X11 display via Xpra (view at `localhost:7756`)
 - Chromium browser: `chromium "<url>"`
 - Nix packages: `nix-shell -p <package> --run "<command>"`
-- Public files: `/workspace/public` → served on port 8080
 
 **Set in the container:**
 

@@ -19,6 +19,32 @@
             "datasourceTemplate": "github-releases",
             "depNameTemplate": "{{#if depName}}{{lowercase (replace '_' '-' (replace '__' '/' depName))}}{{/if}}",
             "extractVersionTemplate": "^v?(?<version>.*)$"
+        },
+        {
+            "customType": "regex",
+            "description": "Scoped npm packages (e.g. NPM_PACKAGE_OPENUIDEV__OPENCLAW_OS_PLUGIN -> @openuidev/openclaw-os-plugin)",
+            "managerFilePatterns": [
+                "/^Dockerfile$/"
+            ],
+            "matchStrings": [
+                "ENV NPM_PACKAGE_(?<depName>[A-Z0-9]+__[A-Z0-9_]+)=(?<currentValue>.*?)\\s"
+            ],
+            "datasourceTemplate": "npm",
+            "depNameTemplate": "@{{lowercase (replace '_' '-' (replace '__' '/' depName))}}",
+            "extractVersionTemplate": "^(?<version>.*)$"
+        },
+        {
+            "customType": "regex",
+            "description": "Unscoped npm packages (e.g. NPM_PACKAGE_OPENCLAW -> openclaw)",
+            "managerFilePatterns": [
+                "/^Dockerfile$/"
+            ],
+            "matchStrings": [
+                "ENV NPM_PACKAGE_(?<depName>[A-Z0-9_]+)=(?<currentValue>[^ \\\\\\n]+)"
+            ],
+            "datasourceTemplate": "npm",
+            "depNameTemplate": "{{lowercase (replace '_' '-' depName)}}",
+            "extractVersionTemplate": "^(?<version>.*)$"
         }
     ]
 }

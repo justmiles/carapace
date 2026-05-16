@@ -11,5 +11,4 @@ if ! grep -q "$OPENCLAW_PATH" "/home/openclaw/.bashrc"; then
     echo "export PATH=$PATH:$OPENCLAW_PATH" >> /home/openclaw/.bashrc
 fi
 
-chown -R openclaw:openclaw /workspace
-chown openclaw:openclaw /home/openclaw/.openclaw
+chown -R openclaw:openclaw /home/openclaw/.openclaw

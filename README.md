@@ -8,7 +8,7 @@ Carapace is a robust container environment designed for **OpenClaw**, providing 
 - **GUI Capabilities**: Includes a virtual X11 display accessible via web browser using **Xpra**.
 - **Browser Automation**: Pre-configured **Chromium** wrapper optimized for container environments.
 - **Package Management**: Integrated **Nix** package manager for installing tools on the fly.
-- **File Serving**: Static file server (**ran-http**) exposing `/workspace/public`.
+- **File Serving**: Static file server (**ran-http**) exposing `~/.openclaw/workspace/public`.
 - **Service Management**: Uses **s6-overlay** for reliable process supervision.
 - **Networking**: **Tailscale** integration for secure remote access.
 
@@ -17,7 +17,7 @@ Carapace is a robust container environment designed for **OpenClaw**, providing 
 | Service | Port | Description |
 |---------|------|-------------|
 | **Xpra** | `7756` | Web-accessible X11 display. Access at `http://localhost:7756`. |
-| **File Server** | `8080` | Serves files from `/workspace/public`. |
+| **File Server** | `8080` | Serves files from `~/.openclaw/workspace/public`. |
 | **OpenClaw** | `18789` | The OpenClaw agent service. |
 
 ## Getting Started
@@ -61,13 +61,12 @@ To run Carapace with full capabilities, including Tailscale integration and pers
     docker run -it --rm --name carapace \
       -e TS_AUTH_KEY="<YOUR_TAILSCALE_AUTH_KEY>" \
       -e TS_HOSTNAME="openclaw-dev" \
-      -e TS_STATE_DIR="/workspace/.tailscale" \
+      -e TS_STATE_DIR="/home/openclaw/.openclaw/.tailscale" \
       -e TS_ACCEPT_ROUTES="true" \
       -e TS_USERSPACE="true" \
       -e TS_ACCEPT_DNS="true" \
       -e TS_EXTRA_ARGS="--ssh" \
       -e OPENCLAW_GATEWAY_TOKEN="<YOUR_GENERATED_TOKEN>" \
-      -v $PWD/.data/workspace:/workspace \
       -v $PWD/.data/openclaw:/home/openclaw/.openclaw \
       justmiles/carapace:v0.0.1
     ```
@@ -93,9 +92,11 @@ chromium "https://example.com"
 
 ### Directory Structure
 
-- `/workspace/` - Root workspace for OpenClaw.
-  - `public/` - Files served via HTTP.
-  - `skills/` - Installed skills (includes the `carapace` skill itself).
+- `/home/openclaw/.openclaw/` - Persistent state (single volume mount).
+  - `workspace/` - Default workspace for OpenClaw.
+    - `public/` - Files served via HTTP.
+    - `skills/` - Installed skills (includes the `carapace` skill itself).
+  - `openclaw.json` - OpenClaw configuration.
 - `/home/openclaw/` - User home directory.
   - `.local/bin/` - Custom scripts.
   - `.nix-profile/` - Nix packages.

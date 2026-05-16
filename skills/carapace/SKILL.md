@@ -1,6 +1,6 @@
 ---
 name: carapace
-description: Carapace container environment for OpenClaw — X11 display, Nix packages, file serving, and browser automation.
+description: Carapace container environment for OpenClaw — X11 display, Nix packages, and browser automation.
 ---
 
 # Carapace Environment
@@ -23,7 +23,6 @@ Think of it as giving the agent its own workstation rather than remote access to
 | Service     | URL                     | Description                                  |
 | ----------- | ----------------------- | -------------------------------------------- |
 | Xpra        | `http://localhost:7756` | Web-accessible X11 display                   |
-| File Server | `http://localhost:8080` | Static file serving from `/workspace/public` |
 
 ## X11 Display
 
@@ -69,34 +68,22 @@ Located at `~/.local/bin/chromium`. Includes flags for:
 - Crash reporter disabled
 - Fontconfig integration
 
-## Public Files
 
-Files placed in `/workspace/public` are served by ran-http on port 8080.
-
-```bash
-# Create a shareable file
-echo "Hello" > /workspace/public/hello.txt
-
-# Access locally
-curl http://localhost:8080/hello.txt
-```
-
-The file server can be exposed publicly via reverse proxy (Traefik, Caddy, etc.) if desired.
 
 ## Directory Structure
 
 ```
-/workspace/              # OpenClaw workspace root
-├── public/              # Publicly served files
-├── skills/              # Installed skills
-├── memory/              # Daily memory files
-└── ...
-
 /home/openclaw/
-├── .local/bin/          # User scripts (chromium wrapper)
-├── .config/fontconfig/  # Font configuration
-├── .runtime/xpra/       # Xpra runtime files
-└── .nix-profile/        # Nix profile (installed packages)
+├── .openclaw/               # Persistent state (volume mount)
+│   ├── openclaw.json        # OpenClaw configuration
+│   └── workspace/           # Default workspace root
+│       ├── skills/          # Installed skills
+│       ├── memory/          # Daily memory files
+│       └── ...
+├── .local/bin/              # User scripts (chromium wrapper)
+├── .config/fontconfig/      # Font configuration
+├── .runtime/xpra/           # Xpra runtime files
+└── .nix-profile/            # Nix profile (installed packages)
 ```
 
 ## Tips
