@@ -68,7 +68,22 @@ Located at `~/.local/bin/chromium`. Includes flags for:
 - Crash reporter disabled
 - Fontconfig integration
 
+## Chezmoi (Dotfile Persistence)
 
+[Chezmoi](https://www.chezmoi.io/) is pre-installed and configured to persist files **outside** the persistent volume. The chezmoi source directory is symlinked into persistent storage and `chezmoi apply` runs automatically on every container startup.
+
+Use chezmoi whenever you need a file to survive container restarts but it lives outside `~/.openclaw/`:
+
+```bash
+# Add a file to chezmoi management
+chezmoi add ~/.gitconfig
+
+# Edit and re-apply
+chezmoi edit ~/.bashrc
+chezmoi apply
+```
+
+Managed files are restored to their correct filesystem locations on startup.
 
 ## Directory Structure
 
@@ -76,11 +91,14 @@ Located at `~/.local/bin/chromium`. Includes flags for:
 /home/openclaw/
 ├── .openclaw/               # Persistent state (volume mount)
 │   ├── openclaw.json        # OpenClaw configuration
+│   ├── chezmoi/             # Chezmoi source (persisted dotfiles)
 │   └── workspace/           # Default workspace root
 │       ├── skills/          # Installed skills
 │       ├── memory/          # Daily memory files
 │       └── ...
-├── .local/bin/              # User scripts (chromium wrapper)
+├── .local/
+│   ├── bin/                 # User scripts (chromium wrapper)
+│   └── share/chezmoi/       # → symlink to .openclaw/chezmoi
 ├── .config/fontconfig/      # Font configuration
 ├── .runtime/xpra/           # Xpra runtime files
 └── .nix-profile/            # Nix profile (installed packages)
@@ -92,3 +110,5 @@ Located at `~/.local/bin/chromium`. Includes flags for:
 - **PDF generation**: Chromium can print to PDF with `--print-to-pdf`
 - **File transfers**: If Tailscale is configured, use `tailscale file cp <file> <device>:`
 - **Fonts**: Additional fonts can be installed via Nix and added to fontconfig
+- **Persist config files**: Use `chezmoi add <file>` to persist any file outside `~/.openclaw/` across restarts
+

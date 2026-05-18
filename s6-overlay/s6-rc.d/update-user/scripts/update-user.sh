@@ -11,4 +11,9 @@ if ! grep -q "$OPENCLAW_PATH" "/home/openclaw/.bashrc"; then
     echo "export PATH=$PATH:$OPENCLAW_PATH" >> /home/openclaw/.bashrc
 fi
 
+# Persist chezmoi source directory inside the persistent volume
+mkdir -p /home/openclaw/.openclaw/chezmoi
+mkdir -p /home/openclaw/.local/share
+ln -sfn /home/openclaw/.openclaw/chezmoi /home/openclaw/.local/share/chezmoi
+
 chown -R openclaw:openclaw /home/openclaw/.openclaw

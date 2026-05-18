@@ -6,8 +6,15 @@ if [ -z "${TS_AUTH_KEY}" ]; then
   exit 0
 fi
 
-[ ! -z "${TS_STATE_DIR}" ]      && ARGS="--statedir=${TS_STATE_DIR} ${ARGS}"
-[ ! -z "${TS_STATE}" ]          && ARGS="--state=${TS_STATE} ${ARGS}"]
+# Default state dir to persistent volume so identity survives container restarts
+TS_STATE_DIR="${TS_STATE_DIR:-/home/openclaw/.openclaw/tailscale}"
+mkdir -p "${TS_STATE_DIR}"
+
+# Create the system state dir Tailscale uses for its log config
+mkdir -p /var/lib/tailscale
+
+ARGS="--statedir=${TS_STATE_DIR}"
+[ ! -z "${TS_STATE}" ]          && ARGS="--state=${TS_STATE} ${ARGS}"
 [ "${TS_USERSPACE}" = "true" ]  && ARGS="--tun=userspace-networking ${ARGS}"
 
 tailscaled ${ARGS} 2>&1 | s6-log -bp n3 'p[tailscaled]' 1 /var/log/tailscaled

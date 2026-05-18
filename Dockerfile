@@ -68,13 +68,10 @@ RUN export PATH=$HOME/.nix-profile/bin:$PATH \
   && nix profile install .#default --print-build-logs --show-trace \
   && nix-collect-garbage -d
 
-# Install OpenClaw and plugins from npm (pre-built, no compilation needed)
-ENV NPM_PACKAGE_OPENCLAW=2026.5.12 \
-    NPM_PACKAGE_OPENUIDEV__OPENCLAW_OS_PLUGIN=0.1.5
+# Install OpenClaw from npm (pre-built, no compilation needed)
+ENV NPM_PACKAGE_OPENCLAW=2026.5.12
 
-RUN npm install --prefix /home/openclaw/app \
-  openclaw@${NPM_PACKAGE_OPENCLAW} \
-  @openuidev/openclaw-os-plugin@${NPM_PACKAGE_OPENUIDEV__OPENCLAW_OS_PLUGIN}
+RUN npm install --prefix /home/openclaw/app openclaw@${NPM_PACKAGE_OPENCLAW}
 
 COPY --chown=openclaw:openclaw .local/bin /home/openclaw/.local/bin
 
@@ -96,15 +93,15 @@ ENV S6_VERBOSITY=1 \
 
 # X11 settings
 ENV DISPLAY=:99 \
-    FONTCONFIG_FILE=/home/openclaw/.config/fontconfig/fonts.conf \
-    XAUTHORITY=/home/openclaw/.runtime/xpra/Xauthority-99
+    FONTCONFIG_FILE=/home/openclaw/.config/fontconfig/fonts.conf
 
 # Container settings
 ENV PATH=$PATH:/home/openclaw/bin:/home/openclaw/.nix-profile/bin \
-CARAPACE=1
+    NIX_CONFIG="experimental-features = nix-command flakes" \
+    CARAPACE=1
 
-# Expose ports for openclaw (18789) and xpra (7756)
-EXPOSE 18789 7756
+# Expose ports for openclaw (18789) and noVNC (6080)
+EXPOSE 18789 6080
 
 ENTRYPOINT ["/init"]
 

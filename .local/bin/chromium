@@ -12,4 +12,5 @@ exec /home/openclaw/.nix-profile/bin/chromium \
   --disable-crash-reporter \
   --disable-breakpad \
   --no-default-browser-check \
+  --ozone-platform=x11 \
   "$@"

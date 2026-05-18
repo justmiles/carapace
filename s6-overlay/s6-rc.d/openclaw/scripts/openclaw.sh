@@ -21,7 +21,4 @@ if [ ! -f "$OPENCLAW_WORKSPACE/AGENTS.md" ] || ! grep -q "Carapace" "$OPENCLAW_W
     cat /home/openclaw/app/skills/carapace/AGENT-SNIPPET.md >> "$OPENCLAW_WORKSPACE/AGENTS.md"
 fi
 
-# Install OpenClaw OS plugin
-node dist/index.js plugins install -l /home/openclaw/app/node_modules/@openuidev/openclaw-os-plugin --force 2>&1 || echo "Warning: Failed to install OpenClaw OS plugin"
-
 node dist/index.js gateway --allow-unconfigured

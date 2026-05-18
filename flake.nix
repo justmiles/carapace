@@ -3,14 +3,21 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    claude-code.url = "github:sadjow/claude-code-nix";
   };
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, claude-code }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
+        overlays = [
+          (final: prev: {
+            # Skip Nomad's Go test suite — it exhausts disk space in Docker builds
+            nomad = prev.nomad.overrideAttrs (old: { doCheck = false; });
+          })
+        ];
       };
     in {
       packages.${system} = rec {
@@ -27,7 +34,17 @@
             pkgs.noto-fonts
             pkgs.xdg-utils
             pkgs.xhost
-            pkgs.xpra
+
+            # --- Remote display (noVNC + x11vnc) ---
+            pkgs.x11vnc
+            pkgs.novnc
+            pkgs.python3Packages.websockify
+            pkgs.xorg.xorgserver   # Xvfb
+
+            # --- X11 keyboard support ---
+            pkgs.xkeyboard_config
+            pkgs.xorg.setxkbmap
+            pkgs.xorg.xkbcomp
 
             # --- Browser ---
             pkgs.chromium
@@ -39,16 +56,12 @@
             pkgs.devbox
             pkgs.pipx
 
-            # --- Python (for pygobject / xpra integration) ---
+            # --- Python ---
             pkgs.python3
             pkgs.python3Packages.pip
-            pkgs.python3Packages.pygobject3
             pkgs.python3Packages.pyxdg
-            pkgs.python3Packages.gst-python
 
-            # --- GObject / GTK support ---
-            pkgs.gobject-introspection
-            pkgs.menu-cache
+            # --- Desktop integration ---
             pkgs.shared-mime-info
 
             # --- Node.js runtime ---
@@ -97,6 +110,9 @@
             pkgs.nomad
             pkgs.tea             # Gitea CLI
             pkgs.chezmoi         # Dotfiles management
+
+            # --- AI coding assistants ---
+            claude-code.packages.${system}.claude-code
           ];
         };
 

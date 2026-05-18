@@ -7,7 +7,7 @@ Carapace is a robust container environment designed for **OpenClaw**, providing 
 ## Features
 
 - **Isolated Workspace**: Runs in a Docker container, keeping agent actions sandboxed from the host system.
-- **GUI Capabilities**: Includes a virtual X11 display accessible via web browser using **Xpra**.
+- **GUI Capabilities**: Includes a virtual X11 display accessible via web browser using **noVNC** + **x11vnc**.
 - **Browser Automation**: Pre-configured **Chromium** wrapper optimized for container environments.
 - **Package Management**: Integrated **Nix** package manager for installing tools on the fly.
 - **Service Management**: Uses **s6-overlay** for reliable process supervision.
@@ -17,7 +17,7 @@ Carapace is a robust container environment designed for **OpenClaw**, providing 
 
 | Service | Port | Description |
 |---------|------|-------------|
-| **Xpra** | `7756` | Web-accessible X11 display. Access at `http://localhost:7756`. |
+| **noVNC** | `6080` | Web-accessible X11 display (VNC over WebSocket). Access at `http://localhost:6080/vnc.html`. |
 | **OpenClaw** | `18789` | The OpenClaw agent service. |
 
 ## Getting Started
@@ -36,7 +36,7 @@ docker build -t justmiles/carapace:{{TAG}} .
 
 ```bash
 docker run -d \
-  -p 7756:7756 \
+  -p 6080:6080 \
   -p 18789:18789 \
   --name carapace-instance \
   justmiles/carapace:{{TAG}}
@@ -70,6 +70,15 @@ To run Carapace with full capabilities, including Tailscale integration and pers
       justmiles/carapace:{{TAG}}
     ```
 
+### First-Time Setup
+
+If this is your first time using OpenClaw, open a shell in the running container and complete the onboarding process:
+
+```bash
+docker exec -it carapace bash
+openclaw onboard
+```
+
 ## Environment Details
 
 ### Nix Package Manager
@@ -94,10 +103,18 @@ chromium "https://example.com"
 - `/home/openclaw/.openclaw/` - Persistent state (single volume mount).
   - `workspace/` - Default workspace for OpenClaw.
     - `skills/` - Installed skills (includes the `carapace` skill itself).
+  - `chezmoi/` - Chezmoi source directory (persisted dotfiles).
   - `openclaw.json` - OpenClaw configuration.
 - `/home/openclaw/` - User home directory.
   - `.local/bin/` - Custom scripts.
+  - `.local/share/chezmoi/` - Symlink to `.openclaw/chezmoi`.
   - `.nix-profile/` - Nix packages.
+
+### Chezmoi (Dotfile Persistence)
+
+Carapace uses [chezmoi](https://www.chezmoi.io/) to persist files **outside** the persistent volume. The chezmoi source directory is symlinked into the persistent volume, and `chezmoi apply` runs automatically on every container startup.
+
+This allows the agent to manage dotfiles and configuration (e.g. `~/.bashrc`, `~/.gitconfig`) that are restored to their correct filesystem locations after each restart.
 
 ## Development
 
@@ -106,3 +123,4 @@ This project includes a `devbox.json` file for reproducible development environm
 ```bash
 devbox shell
 ```
+
